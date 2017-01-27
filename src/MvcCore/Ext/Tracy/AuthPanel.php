@@ -8,10 +8,18 @@
  * the LICENSE.md file that are distributed with this source code.
  *
  * @copyright	Copyright (c) 2016 Tom Flídr (https://github.com/mvccore/mvccore)
- * @license		https://mvccore.github.io/docs/mvccore/3.0.0/LICENCE.md
+ * @license		https://mvccore.github.io/docs/mvccore/4.0.0/LICENCE.md
  */
 
-class MvcCoreExt_Tracy_AuthPanel implements \Tracy\IBarPanel {
+namespace MvcCore\Ext\Debug\Tracy;
+
+class AuthPanel implements \Tracy\IBarPanel {
+	/**
+	 * MvcCore Extension - Debug - Tracy Panel - Auth - version:
+	 * Comparation by PHP function version_compare();
+	 * @see http://php.net/manual/en/function.version-compare.php
+	 */
+	const VERSION = '4.0.0';
 	/**
 	 * Debug panel id
 	 * @var string
@@ -20,7 +28,7 @@ class MvcCoreExt_Tracy_AuthPanel implements \Tracy\IBarPanel {
 	/**
 	 * Prepared view data, only once,
 	 * to render debug tab and debug panel content.
-	 * @var stdClass
+	 * @var \stdClass
 	 */
 	protected static $viewData = NULL;
 	/**
@@ -62,7 +70,7 @@ class MvcCoreExt_Tracy_AuthPanel implements \Tracy\IBarPanel {
 	/**
 	 * Set up view data, if data are completed,
 	 * return them directly.
-	 * - complete basic MvcCore core objects to complere other view data
+	 * - complete basic \MvcCore core objects to complere other view data
 	 * - complete user and authorized boolean
 	 * - set result data into static field
 	 * @return object
@@ -70,8 +78,8 @@ class MvcCoreExt_Tracy_AuthPanel implements \Tracy\IBarPanel {
 	public static function setUpViewData () {
 		if (static::$viewData) return static::$viewData;
 
-		$user = MvcCoreExt_Auth::GetInstance()->GetUser();
-		$authorized = $user instanceof MvcCoreExt_Auth_User;
+		$user = \MvcCore\Ext\Auth::GetInstance()->GetUser();
+		$authorized = $user instanceof \MvcCore\Ext\Auth\User;
 
 		static::$viewData = (object) array(
 			'user'		=> $user,
