@@ -13,38 +13,37 @@
 
 namespace MvcCore\Ext\Debug\Tracy;
 
-class AuthPanel implements \Tracy\IBarPanel {
+class AuthPanel implements \Tracy\IBarPanel
+{
 	/**
 	 * MvcCore Extension - Debug - Tracy Panel - Auth - version:
 	 * Comparation by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '4.3.1';
-	/**
-	 * Debug panel id
-	 * @var string
-	 */
-	public static $Id = 'auth-panel';
+	const VERSION = '5.0.0-alpha';
+
 	/**
 	 * Prepared view data, only once,
 	 * to render debug tab and debug panel content.
-	 * @var \stdClass
+	 * @var \stdClass|NULL
 	 */
-	protected static $viewData = NULL;
+	protected $view = NULL;
+
 	/**
 	 * Return unique panel id.
 	 * @return string
 	 */
 	public function getId() {
-		return self::$Id;
+		return 'auth-panel';
 	}
+
 	/**
 	 * Render tab (panel header).
 	 * Set up view data if necessary.
 	 * @return string
 	 */
 	public function getTab() {
-		$view = self::setUpViewData();
+		$view = $this->getViewData();
 		return '<span title="' . ($view->authorized ? 'Authorized' : 'Not authorized') . '">'
 			.'<svg viewBox="0 -50 2048 2048">'
 				.'<path fill="' . ($view->authorized ? '#61A519' : '#ababab') . '" '
@@ -61,7 +60,7 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 * @return string
 	 */
 	public function getPanel() {
-		$view = self::setUpViewData();
+		$view = $this->getViewData();
 		return '<h1>' . ($view->authorized ? 'Authorized' : 'Not authorized') . '</h1>'
 			. ($view->authorized ? \Tracy\Dumper::toHtml($view->user, array(
 				\Tracy\Dumper::LIVE => TRUE,
@@ -75,17 +74,17 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 * - set result data into static field
 	 * @return object
 	 */
-	public static function setUpViewData () {
-		if (static::$viewData) return static::$viewData;
-
-		$user = \MvcCore\Ext\Auth::GetInstance()->GetUser();
-		$authorized = $user instanceof \MvcCore\Ext\Auth\User;
-
-		static::$viewData = (object) array(
-			'user'		=> $user,
+	public function & getViewData () {
+		if ($this->view !== NULL) return $this->view;
+		$user = & \MvcCore\Ext\Auth::GetInstance()->GetUser();
+		$authorized = $user instanceof \MvcCore\Ext\Auth\Interfaces\IUser;
+		/** @var $userClone \MvcCore\Ext\Auth\Interfaces\IUser */
+		$userClone = unserialize(serialize($user));
+		$userClone->SetPasswordHash(NULL);
+		$this->view = (object) array(
+			'user'		=> $userClone,
 			'authorized'=> $authorized,
 		);
-
-		return static::$viewData;
+		return $this->view;
 	}
 }
