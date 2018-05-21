@@ -76,9 +76,9 @@ class AuthPanel implements \Tracy\IBarPanel
 	 */
 	public function & getViewData () {
 		if ($this->view !== NULL) return $this->view;
-		$user = & \MvcCore\Ext\Auth::GetInstance()->GetUser();
-		$authorized = $user instanceof \MvcCore\Ext\Auth\Interfaces\IUser;
-		/** @var $userClone \MvcCore\Ext\Auth\Interfaces\IUser|NULL */
+		$user = & \MvcCore\Ext\Auth\Basic::GetInstance()->GetUser();
+		$authorized = $user instanceof \MvcCore\Ext\Auth\Basic\Interfaces\IUser;
+		/** @var $userClone \MvcCore\Ext\Auth\Basic\Interfaces\IUser|NULL */
 		$userClone = NULL;
 		if ($authorized) {
 			$userClone = unserialize(serialize($user));
