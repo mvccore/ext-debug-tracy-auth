@@ -54,6 +54,7 @@ class AuthPanel implements \Tracy\IBarPanel
 			.'</svg>'
 		.'</span>';
 	}
+
 	/**
 	 * Render panel (panel content).
 	 * Set up view data if necessary.
@@ -66,6 +67,7 @@ class AuthPanel implements \Tracy\IBarPanel
 				\Tracy\Dumper::LIVE => TRUE,
 			)) : '<p>no identity</p>');
 	}
+
 	/**
 	 * Set up view data, if data are completed,
 	 * return them directly.
@@ -77,15 +79,9 @@ class AuthPanel implements \Tracy\IBarPanel
 	public function & getViewData () {
 		if ($this->view !== NULL) return $this->view;
 		$user = & \MvcCore\Ext\Auth\Basic::GetInstance()->GetUser();
-		$authorized = $user instanceof \MvcCore\Ext\Auth\Basic\Interfaces\IUser;
-		/** @var $userClone \MvcCore\Ext\Auth\Basic\Interfaces\IUser|NULL */
-		$userClone = NULL;
-		if ($authorized) {
-			$userClone = unserialize(serialize($user));
-			$userClone->SetPasswordHash(NULL);
-		}
+		$authorized = $user instanceof \MvcCore\Ext\Auth\Basics\Interfaces\IUser;
 		$this->view = (object) array(
-			'user'		=> $userClone,
+			'user'		=> $user,
 			'authorized'=> $authorized,
 		);
 		return $this->view;
