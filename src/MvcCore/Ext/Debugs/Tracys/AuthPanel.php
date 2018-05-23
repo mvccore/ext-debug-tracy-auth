@@ -11,8 +11,11 @@
  * @license		https://mvccore.github.io/docs/mvccore/4.0.0/LICENCE.md
  */
 
-namespace MvcCore\Ext\Debug\Tracy;
+namespace MvcCore\Ext\Debugs\Tracys;
 
+/**
+ * Responsibility - dump user instance if user is authenticated.
+ */
 class AuthPanel implements \Tracy\IBarPanel
 {
 	/**
@@ -44,9 +47,9 @@ class AuthPanel implements \Tracy\IBarPanel
 	 */
 	public function getTab() {
 		$view = $this->getViewData();
-		return '<span title="' . ($view->authorized ? 'Authorized' : 'Not authorized') . '">'
+		return '<span title="' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '">'
 			.'<svg viewBox="0 -50 2048 2048">'
-				.'<path fill="' . ($view->authorized ? '#61A519' : '#ababab') . '" '
+				.'<path fill="' . ($view->authenticated ? '#61A519' : '#ababab') . '" '
 					.'d="m1615 1803.5c-122 17-246 7-369 8-255 1-510 3-765-1-136-2-266-111-273-250-11-192 11-290.5 '
 					.'115-457.5 62-100 192-191 303-147 110 44 201 130 321 149 160 25 317-39 446-130 82-58 200-9 '
 					.'268 51 157 173 186.8 275.49 184 484.49-1.9692 147.11-108.91 271.41-230 293zm-144-1226.5c0 '
@@ -62,8 +65,8 @@ class AuthPanel implements \Tracy\IBarPanel
 	 */
 	public function getPanel() {
 		$view = $this->getViewData();
-		return '<h1>' . ($view->authorized ? 'Authorized' : 'Not authorized') . '</h1>'
-			. ($view->authorized ? \Tracy\Dumper::toHtml($view->user, array(
+		return '<h1>' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '</h1>'
+			. ($view->authenticated ? \Tracy\Dumper::toHtml($view->user, array(
 				\Tracy\Dumper::LIVE => TRUE,
 			)) : '<p>no identity</p>');
 	}
@@ -78,11 +81,11 @@ class AuthPanel implements \Tracy\IBarPanel
 	 */
 	public function & getViewData () {
 		if ($this->view !== NULL) return $this->view;
-		$user = & \MvcCore\Ext\Auth\Basic::GetInstance()->GetUser();
-		$authorized = $user instanceof \MvcCore\Ext\Auth\Basics\Interfaces\IUser;
+		$user = & \MvcCore\Ext\Auths\Basic::GetInstance()->GetUser();
+		$authenticated = $user instanceof \MvcCore\Ext\Auths\Basics\Interfaces\IUser;
 		$this->view = (object) array(
-			'user'		=> $user,
-			'authorized'=> $authorized,
+			'user'			=> $user,
+			'authenticated'	=> $authenticated,
 		);
 		return $this->view;
 	}
