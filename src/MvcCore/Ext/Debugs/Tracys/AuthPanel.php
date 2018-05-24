@@ -82,7 +82,7 @@ class AuthPanel implements \Tracy\IBarPanel
 	public function & getViewData () {
 		if ($this->view !== NULL) return $this->view;
 		$user = & \MvcCore\Ext\Auths\Basic::GetInstance()->GetUser();
-		$authenticated = $user instanceof \MvcCore\Ext\Auths\Basics\Interfaces\IUser;
+		$authenticated = $user instanceof \MvcCore\Ext\Auths\Basics\IUser;
 		$this->view = (object) array(
 			'user'			=> $user,
 			'authenticated'	=> $authenticated,
