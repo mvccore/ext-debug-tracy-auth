@@ -66,9 +66,9 @@ class AuthPanel implements \Tracy\IBarPanel
 	public function getPanel() {
 		$view = $this->getViewData();
 		return '<h1>' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '</h1>'
-			. ($view->authenticated ? \Tracy\Dumper::toHtml($view->user, array(
+			. ($view->authenticated ? \Tracy\Dumper::toHtml($view->user, [
 				\Tracy\Dumper::LIVE => TRUE,
-			)) : '<p>no identity</p>');
+			]) : '<p>no identity</p>');
 	}
 
 	/**
@@ -83,10 +83,10 @@ class AuthPanel implements \Tracy\IBarPanel
 		if ($this->view !== NULL) return $this->view;
 		$user = & \MvcCore\Ext\Auths\Basic::GetInstance()->GetUser();
 		$authenticated = $user instanceof \MvcCore\Ext\Auths\Basics\IUser;
-		$this->view = (object) array(
+		$this->view = (object) [
 			'user'			=> $user,
 			'authenticated'	=> $authenticated,
-		);
+		];
 		return $this->view;
 	}
 }
