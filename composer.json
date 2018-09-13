@@ -1,7 +1,7 @@
 {
 	"name": "mvccore/ext-debug-tracy-auth",
 	"type": "library",
-	"description": "MvcCore Extension - Debug Tracy Panel - Auth - render and add into tracy debug panel currently authenticated user from \\MvcCore\\Ext\\Auth service singleton instance, printed by \\Tracy\\Dumper::toHtml(\\MvcCore\\Ext\\Auth::GetInstance()->GetUser());.",
+	"description": "MvcCore - Extension - Debug - Tracy - Panel Auth - render and add into tracy debug panel currently authenticated user from \\MvcCore\\Ext\\Auth service singleton instance, printed by \\Tracy\\Dumper::toHtml(\\MvcCore\\Ext\\Auth::GetInstance()->GetUser());.",
 	"keywords": [
 		"mvc", 
 		"mvccore", 
