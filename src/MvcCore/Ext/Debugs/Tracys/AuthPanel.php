@@ -46,7 +46,7 @@ class AuthPanel implements \Tracy\IBarPanel
 	 * @return string
 	 */
 	public function getTab() {
-		$view = $this->getViewData();
+		$view = & $this->getViewData();
 		return '<span title="' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '">'
 			.'<svg viewBox="0 -50 2048 2048">'
 				.'<path fill="' . ($view->authenticated ? '#61A519' : '#ababab') . '" '
@@ -64,7 +64,7 @@ class AuthPanel implements \Tracy\IBarPanel
 	 * @return string
 	 */
 	public function getPanel() {
-		$view = $this->getViewData();
+		$view = & $this->getViewData();
 		return '<h1>' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '</h1>'
 			. ($view->authenticated ? \Tracy\Dumper::toHtml($view->user, [
 				\Tracy\Dumper::LIVE => TRUE,
@@ -81,7 +81,7 @@ class AuthPanel implements \Tracy\IBarPanel
 	 */
 	public function & getViewData () {
 		if ($this->view !== NULL) return $this->view;
-		$user = & \MvcCore\Ext\Auths\Basic::GetInstance()->GetUser();
+		$user = \MvcCore\Ext\Auths\Basic::GetInstance()->GetUser();
 		$authenticated = $user instanceof \MvcCore\Ext\Auths\Basics\IUser;
 		$this->view = (object) [
 			'user'			=> $user,
