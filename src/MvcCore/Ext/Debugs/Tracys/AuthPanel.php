@@ -67,7 +67,8 @@ class AuthPanel implements \Tracy\IBarPanel {
 		$view = & $this->getViewData();
 		return '<h1>' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '</h1>'
 			. ($view->authenticated ? \Tracy\Dumper::toHtml($view->user, [
-				\Tracy\Dumper::LIVE => TRUE,
+				\Tracy\Dumper::COLLAPSE	=> FALSE,
+				//\Tracy\Dumper::LIVE		=> TRUE,
 			]) : '<p>no identity</p>');
 	}
 
