@@ -23,7 +23,7 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.0.1';
+	const VERSION = '5.0.2';
 
 	/**
 	 * Prepared view data, only once,
@@ -31,6 +31,13 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 * @var \stdClass|NULL
 	 */
 	protected $view = NULL;
+
+	/**
+	 * Debug code for this panel, printed at panel bottom.
+	 * @var string
+	 */
+	private $_debugCode = '';
+
 
 	/**
 	 * Return unique panel id.
@@ -47,7 +54,7 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 */
 	public function getTab() {
 		$view = & $this->getViewData();
-		return '<span title="' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '">'
+		return '<span title="' . ($view->authenticated ? 'Authenticated' : 'Not&nbsp;authenticated') . '">'
 			.'<svg viewBox="0 -50 2048 2048">'
 				.'<path fill="' . ($view->authenticated ? '#61A519' : '#ababab') . '" '
 					.'d="m1615 1803.5c-122 17-246 7-369 8-255 1-510 3-765-1-136-2-266-111-273-250-11-192 11-290.5 '
@@ -65,11 +72,19 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 */
 	public function getPanel() {
 		$view = & $this->getViewData();
-		return '<h1>' . ($view->authenticated ? 'Authenticated' : 'Not authenticated') . '</h1>'
-			. ($view->authenticated ? \Tracy\Dumper::toHtml($view->user, [
-				\Tracy\Dumper::COLLAPSE	=> FALSE,
-				//\Tracy\Dumper::LIVE		=> TRUE,
-			]) : '<p>no identity</p>');
+		return implode('', [
+			'<h1 style="word-wrap:normal;">' . ($view->authenticated ? 'Authenticated' : 'Not&nbsp;authenticated') . '</h1>',
+			($view->authenticated 
+				? \Tracy\Dumper::toHtml($view->user, [
+					\Tracy\Dumper::COLLAPSE	=> FALSE,
+					//\Tracy\Dumper::LIVE		=> TRUE,
+				])
+				: ('<p>' . ($view->identity !== null ? 'identity: ' . \Tracy\Dumper::toHtml($view->identity, [
+					\Tracy\Dumper::COLLAPSE	=> FALSE,
+					//\Tracy\Dumper::LIVE		=> TRUE,
+				]) : 'no&nbsp;identity') . '</p>')),
+			$this->_debugCode
+		]);
 	}
 
 	/**
@@ -82,12 +97,32 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 */
 	public function & getViewData () {
 		if ($this->view !== NULL) return $this->view;
-		$user = \MvcCore\Ext\Auths\Basic::GetInstance()->GetUser();
+		$auth = \MvcCore\Ext\Auths\Basic::GetInstance();
+		$userClass = $auth->GetUserClass();
+		$identitySession = $userClass::GetSessionIdentity();
+		$identity = $identitySession instanceof \MvcCore\ISession
+			? $identitySession->{\MvcCore\Ext\Auths\Basics\IUser::SESSION_USERNAME_KEY}
+			: NULL;
+		$user = $auth->GetUser();
 		$authenticated = $user instanceof \MvcCore\Ext\Auths\Basics\IUser;
 		$this->view = (object) [
+			'identity'		=> $identity,
 			'user'			=> $user,
 			'authenticated'	=> $authenticated,
 		];
 		return $this->view;
+	}
+
+	
+	/**
+	 * Print any variable at panel bottom.
+	 * @param  mixed $var
+	 * @return void
+	 */
+	private function _debug ($var) {
+		$this->_debugCode .= \Tracy\Dumper::toHtml($var, [
+			\Tracy\Dumper::LIVE		=> TRUE,
+			//\Tracy\Dumper::DEPTH	=> 5,
+		]);
 	}
 }
