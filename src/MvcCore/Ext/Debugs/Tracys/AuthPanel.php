@@ -23,7 +23,7 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.0.2';
+	const VERSION = '5.0.3';
 
 	/**
 	 * Prepared view data, only once,
@@ -54,15 +54,19 @@ class AuthPanel implements \Tracy\IBarPanel {
 	 */
 	public function getTab() {
 		$view = & $this->getViewData();
-		return '<span title="' . ($view->authenticated ? 'Authenticated' : 'Not&nbsp;authenticated') . '">'
-			.'<svg viewBox="0 -50 2048 2048">'
-				.'<path fill="' . ($view->authenticated ? '#61A519' : '#ababab') . '" '
-					.'d="m1615 1803.5c-122 17-246 7-369 8-255 1-510 3-765-1-136-2-266-111-273-250-11-192 11-290.5 '
-					.'115-457.5 62-100 192-191 303-147 110 44 201 130 321 149 160 25 317-39 446-130 82-58 200-9 '
-					.'268 51 157 173 186.8 275.49 184 484.49-1.9692 147.11-108.91 271.41-230 293zm-144-1226.5c0 '
-					.'239-208 447-447 447s-447-208-447-447 208-447 447-447c240 1 446 207 447 447z" />'
-			.'</svg>'
-		.'</span>';
+		$titleText = $view->authenticated ? 'Authenticated' : 'Not&nbsp;authenticated';
+		$pathColor = $view->authenticated ? '#61A519' : '#ababab';
+		return <<<SVG
+<span title="{$titleText}">
+	<svg viewBox="0 -50 2048 2048">
+		<path fill="{$pathColor}" 
+			d="m1615 1803.5c-122 17-246 7-369 8-255 1-510 3-765-1-136-2-266-111-273-250-11-192 11-290.5 
+			115-457.5 62-100 192-191 303-147 110 44 201 130 321 149 160 25 317-39 446-130 82-58 200-9 
+			268 51 157 173 186.8 275.49 184 484.49-1.9692 147.11-108.91 271.41-230 293zm-144-1226.5c0 
+			239-208 447-447 447s-447-208-447-447 208-447 447-447c240 1 446 207 447 447z" />
+	</svg>
+</span>
+SVG;
 	}
 
 	/**
